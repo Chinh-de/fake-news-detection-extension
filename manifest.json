@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Fake News Detection System",
+  "version": "1.0",
+  "description": "Kiểm duyệt và phát hiện tin giả trên Facebook sử dụng PhoBERT + RAG + Qwen (Fake News Detection System)",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.facebook.com/*",
+    "http://localhost:8000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.facebook.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "action": {
+    "default_title": "Fake News Detector",
+    "default_popup": "popup.html"
+  }
+}

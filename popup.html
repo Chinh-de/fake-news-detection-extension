@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Fake News Detection System</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="header-logo">
+        <span class="logo-icon">🛡️</span>
+        <h1 class="logo-title">Fake News Detection</h1>
+      </div>
+      <div class="status-indicator" id="backend-status">
+        <span class="status-dot offline"></span>
+        <span class="status-label">Đang kết nối...</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="popup-main">
+      <div class="input-section">
+        <label for="news-input" class="section-label">Nội dung tin tức cần kiểm tra</label>
+        <textarea id="news-input" rows="5" placeholder="Dán hoặc nhập đoạn văn bản, bài đăng cần phân tích tại đây..."></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-section">
+        <button id="btn-predict" class="btn btn-secondary" disabled>
+          🤖 Dự đoán nhanh SLM
+        </button>
+        <button id="btn-analyze" class="btn btn-primary" disabled>
+          ✨ Phân tích sâu (RAG)
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-spinner" class="loading-container hidden">
+        <!-- Simple Predict Loading -->
+        <div id="simple-loading" class="simple-loading">
+          <div class="spinner"></div>
+          <span id="loading-text">Đang phân tích tin tức...</span>
+        </div>
+        
+        <!-- Deep RAG+LLM Stepper Loading -->
+        <div id="stepper-loading" class="stepper-loading hidden">
+          <div class="stepper-header">
+            <span class="spinner-small"></span>
+            <div>
+              <div class="stepper-title">Hệ thống RAG đang xử lý...</div>
+              <div class="stepper-subtitle">Đang đối chiếu dữ liệu thực tế và tổng hợp</div>
+            </div>
+          </div>
+          <div class="stepper-list">
+            <div class="step-item" id="step-1">
+              <div class="step-icon">1</div>
+              <span class="step-label">Đọc nội dung và xác định điểm chính</span>
+            </div>
+            <div class="step-item" id="step-2">
+              <div class="step-icon">2</div>
+              <span class="step-label">Tìm thông tin liên quan để đối chiếu</span>
+            </div>
+            <div class="step-item" id="step-3">
+              <div class="step-icon">3</div>
+              <span class="step-label">So sánh với nguồn tham khảo đáng tin cậy</span>
+            </div>
+            <div class="step-item" id="step-4">
+              <div class="step-icon">4</div>
+              <span class="step-label">Tổng hợp kết quả và đưa ra nhận định</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-message" class="error-container hidden">
+      </div>
+
+      <!-- Results Panel -->
+      <div id="results-panel" class="results-container hidden">
+        
+        <!-- SLM Fast Predict Result -->
+        <div class="result-card slm-card">
+          <div class="card-header">
+            <span class="card-title">🤖 DỰ ĐOÁN PHONG CÁCH (SLM)</span>
+            <span id="slm-badge" class="badge">CHƯA CHẠY</span>
+          </div>
+          <div class="card-body">
+            <div class="confidence-container">
+              <div class="confidence-header">
+                <span class="confidence-label">Độ tự tin:</span>
+                <span id="slm-confidence" class="confidence-value">0%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div id="slm-progress" class="progress-bar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LLM Deep Analysis Result -->
+        <div id="llm-card" class="result-card llm-card hidden">
+          <div class="card-header">
+            <span class="card-title">✨ PHÂN TÍCH CHỨNG CỨ (LLM)</span>
+            <span id="llm-badge" class="badge">CHƯA CHẠY</span>
+          </div>
+          <div class="card-body space-y">
+            <!-- Consensus Badge -->
+            <div id="conclusion-box" class="conclusion-box">
+              Cả hai mô hình đều đồng nhất kết luận.
+            </div>
+            
+            <div class="explanation-section">
+              <span class="explanation-title">Lý do & Lập luận:</span>
+              <p id="llm-explanation" class="explanation-text">Đang phân tích...</p>
+            </div>
+
+            <!-- Wikipedia Evidence -->
+            <div id="wiki-section" class="evidence-section hidden">
+              <span class="evidence-title">Thực thể từ Wikipedia:</span>
+              <div id="wiki-list" class="evidence-list"></div>
+            </div>
+
+            <!-- News Evidence -->
+            <div id="news-section" class="evidence-section hidden">
+              <span class="evidence-title">Nguồn báo đối chiếu:</span>
+              <div id="news-list" class="evidence-list"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      Kết quả chỉ để tham khảo, vui lòng kiểm chứng thêm.
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
