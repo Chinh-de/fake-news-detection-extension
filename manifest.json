@@ -5,11 +5,13 @@
   "description": "Kiểm duyệt và phát hiện tin giả trên Facebook sử dụng PhoBERT + RAG + Qwen (Fake News Detection System)",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "host_permissions": [
     "https://*.facebook.com/*",
-    "http://localhost:8000/*"
+    "http://localhost:8000/*",
+    "https://chinhde-fake-news-detection-backend.hf.space/*"
   ],
   "background": {
     "service_worker": "background.js"

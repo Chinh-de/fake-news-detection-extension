@@ -1,13 +1,14 @@
 // Configuration
-const API_URL = 'http://localhost:8000';
+// Note: API_URL is dynamically managed via popup settings and resolved in background.js.
+
 
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 const POST_CANDIDATE_SELECTOR = '[role="article"], div.x1a2a7pz';
@@ -188,7 +189,7 @@ function getPostId(postElement, text) {
     /\/videos\/(\d+)/,
     /\/posts\/(\d+)/,
     /\/permalink\/(\d+)/,
-    /\/stories\/(\d+)/,
+    // /\/stories\/(\d+)/,
     /fbid=(\d{9,})/,
     /[?&]id=(\d{9,})/
   ];
@@ -213,7 +214,7 @@ function getPostId(postElement, text) {
       }
     }
   }
-  
+
   return null;
 }
 
@@ -222,16 +223,16 @@ function getQuickPredictionDisplay(slmLabel, slmConfidence) {
   const isFake = slmLabel === 1;
 
   if (!isFake) {
-    if (confidencePct >= 90) return { label: 'Tin thật: Đáng tin cậy', chipClass: 'fnd-chip-real-high' };
-    if (confidencePct >= 75) return { label: 'Tin thật: Khá tin cậy', chipClass: 'fnd-chip-real-medium' };
-    if (confidencePct >= 60) return { label: 'Tin thật: Có cơ sở', chipClass: 'fnd-chip-real-low' };
-    return { label: 'Tin thật: Cần xác minh', chipClass: 'fnd-chip-warning' };
+    if (confidencePct >= 90) return { label: 'Tin chính xác: Đáng tin cậy', chipClass: 'fnd-chip-real-high' };
+    if (confidencePct >= 75) return { label: 'Tin chính xác: Khá tin cậy', chipClass: 'fnd-chip-real-medium' };
+    if (confidencePct >= 60) return { label: 'Tin chính xác: Có cơ sở', chipClass: 'fnd-chip-real-low' };
+    return { label: 'Tin chính xác: Cần xác minh thêm', chipClass: 'fnd-chip-warning' };
   }
 
-  if (confidencePct >= 90) return { label: 'Tin giả: Không đáng tin', chipClass: 'fnd-chip-fake-high' };
-  if (confidencePct >= 75) return { label: 'Tin giả: Ít tin cậy', chipClass: 'fnd-chip-fake-medium' };
-  if (confidencePct >= 60) return { label: 'Tin giả: Có dấu hiệu sai lệch', chipClass: 'fnd-chip-fake-low' };
-  return { label: 'Tin giả: Cần thận trọng', chipClass: 'fnd-chip-fake-warn' };
+  if (confidencePct >= 90) return { label: 'Tin sai lệch: Rất đáng ngờ', chipClass: 'fnd-chip-fake-high' };
+  if (confidencePct >= 75) return { label: 'Tin sai lệch: Thiếu tin cậy', chipClass: 'fnd-chip-fake-medium' };
+  if (confidencePct >= 60) return { label: 'Tin sai lệch: Có dấu hiệu sai sự thật', chipClass: 'fnd-chip-fake-low' };
+  return { label: 'Tin sai lệch: Cần hết sức thận trọng', chipClass: 'fnd-chip-fake-warn' };
 }
 
 function buildEvidenceHtml(record) {
@@ -245,13 +246,13 @@ function buildEvidenceHtml(record) {
     `).join('');
   }
 
-  let newsHtml = '<p class="fnd-empty-state">Không có ngữ liệu tin tức đối chứng.</p>';
+  let newsHtml = '<p class="fnd-empty-state">Không có nguồn tin đối chiếu.</p>';
   if (record.rag_evidence && record.rag_evidence.length > 0) {
     newsHtml = record.rag_evidence.map(item => `
       <div class="fnd-evidence-item">
         <div class="fnd-evidence-title">${item.title}</div>
         <p class="fnd-evidence-text">"${item.chunk_text}"</p>
-        <a href="${item.url}" target="_blank" class="fnd-evidence-link">Nguồn bài báo →</a>
+        <a href="${item.url}" target="_blank" class="fnd-evidence-link">Xem nguồn tin đối chiếu →</a>
       </div>
     `).join('');
   }
@@ -263,18 +264,18 @@ function buildAnalysisPanel(record) {
   const slmIsFake = record.slm_label === 1;
   const llmIsFake = record.llm_label === 1;
   const isConflict = slmIsFake !== llmIsFake;
-  
+
   const evaluationClass = isConflict ? 'fnd-evaluation-conflict' : 'fnd-evaluation-match';
   let evaluationText = '';
-  
+
   if (isConflict) {
-    const slmStr = slmIsFake ? 'Giả' : 'Thật';
-    const llmStr = llmIsFake ? 'Giả' : 'Thật';
-    evaluationText = `Mặc dù văn phong cho thấy đây là tin ${slmStr}, tuy nhiên các kiểm chứng đi kèm lại cho thấy đây là tin ${llmStr}. Người dùng cần tự đối chiếu kiểm chứng và đánh giá lại.`;
+    const slmStr = slmIsFake ? 'sai lệch' : 'chính xác';
+    const llmStr = llmIsFake ? 'sai lệch' : 'chính xác';
+    evaluationText = `Bài viết có giọng điệu giống tin ${slmStr}, nhưng đối chiếu thực tế cho thấy đây là tin ${llmStr}. Bạn cần tự kiểm chứng lại để chắc chắn. Phân tích của AI có thể chưa hoàn hảo và cần được xem như một công cụ hỗ trợ, không phải là kết luận cuối cùng.`;
   } else {
-    evaluationText = slmIsFake 
-      ? 'Cả mô hình dự đoán và phân tích chuyên sâu đều nhận định đây là TIN GIẢ.'
-      : 'Cả mô hình dự đoán và phân tích chuyên sâu đều nhận định đây là TIN THẬT.';
+    evaluationText = slmIsFake
+      ? 'Cả hai phương pháp phân tích đều nhận định đây là tin SAI SỰ THẬT.'
+      : 'Cả hai phương pháp phân tích đều nhận định đây là tin CHÍNH XÁC.';
   }
 
   const { wikiHtml, newsHtml } = buildEvidenceHtml(record);
@@ -282,8 +283,8 @@ function buildAnalysisPanel(record) {
   return `
     <div class="fnd-analysis-panel-head">
       <div class="fnd-panel-title-wrap">
-        <span class="fnd-panel-title">🔍 Phân tích chuyên sâu</span>
-        <span class="fnd-chip ${evaluationClass}">${slmIsFake === llmIsFake ? 'Đồng nhất' : 'Xung đột'}</span>
+        <span class="fnd-panel-title">🔍 Kết quả đối chiếu thông tin</span>
+        <span class="fnd-chip ${evaluationClass}">${slmIsFake === llmIsFake ? 'Trùng khớp' : 'Chưa đồng nhất'}</span>
       </div>
       <button class="fnd-panel-close" type="button" data-fnd-action="collapse-analysis">Thu gọn</button>
     </div>
@@ -293,28 +294,28 @@ function buildAnalysisPanel(record) {
       </div>
       
       <div>
-        <div class="fnd-section-title">Lý do/Lập luận của LLM:</div>
+        <div class="fnd-section-title">Giải thích từ trợ lý AI:</div>
         <div class="fnd-explanation-box">
           ${record.llm_explanation || 'Không có giải thích cụ thể.'}
         </div>
       </div>
       
       <div>
-        <div class="fnd-section-title">Định nghĩa thực thể (Wikipedia):</div>
+        <div class="fnd-section-title">Thông tin liên quan trên Wikipedia:</div>
         <div class="fnd-evidence-list">
           ${wikiHtml}
         </div>
       </div>
       
       <div>
-        <div class="fnd-section-title">Ngữ liệu báo chí đối chiếu:</div>
+        <div class="fnd-section-title">Nguồn tin đối chiếu:</div>
         <div class="fnd-evidence-list">
           ${newsHtml}
         </div>
       </div>
     </div>
     <div class="fnd-analysis-panel-footer">
-      Kết quả chỉ để tham khảo cần tự đối chiếu kiểm tra thêm
+      Kết quả phân tích từ AI chỉ mang tính chất tham khảo, bạn vui lòng tự đối chiếu và kiểm tra thêm.
     </div>
   `;
 }
@@ -367,11 +368,10 @@ async function checkPost(postElement, btnElement) {
   resultRow.innerHTML = `
     <div class="fnd-result-top">
       <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span class="fnd-chip fnd-chip-neutral">🤖 Đang chạy SLM</span>
-        <span class="fnd-chip fnd-chip-info">ID: ${postIdDisplay}</span>
+        <span class="fnd-chip fnd-chip-neutral">🤖 Đang kiểm tra văn phong...</span>
       </span>
       <span class="fnd-chip fnd-chip-info">
-        <span class="fnd-spinner"></span> Đang dự đoán...
+        <span class="fnd-spinner"></span> Đang xử lý...
       </span>
     </div>
     <div class="fnd-analysis-panel" aria-hidden="true"></div>
@@ -382,33 +382,30 @@ async function checkPost(postElement, btnElement) {
       text,
       fb_post_id: fbPostId || null
     });
-    const slmIsFake = predData.slm_label === 1;
     const quickDisplay = getQuickPredictionDisplay(predData.slm_label, predData.slm_confidence);
 
     resultRow.innerHTML = `
       <div class="fnd-result-top">
-        <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <span class="fnd-chip fnd-chip-neutral">🤖 SLM</span>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.03em;">Đánh giá nhanh:</span>
           <span class="fnd-chip ${quickDisplay.chipClass}">
             ${quickDisplay.label}
           </span>
-          <span class="fnd-chip fnd-chip-info">ID: ${postIdDisplay}</span>
-          <span class="fnd-chip fnd-chip-info">${(predData.slm_confidence * 100).toFixed(0)}% tự tin</span>
-        </span>
-        <span class="fnd-status-text">
-          <button class="fnd-action-link" type="button">Phân tích chuyên sâu</button>
-        </span>
+          <span style="font-size: 11.5px; color: #475569;">
+            Độ tin cậy: <strong style="color: #0f172a; font-weight: 700;">${(predData.slm_confidence * 100).toFixed(0)}%</strong>
+          </span>
+        </div>
+        <button class="fnd-action-link" type="button">Tìm kiếm & đối chiếu thực tế</button>
       </div>
       <div class="fnd-analysis-panel" aria-hidden="true"></div>
     `;
 
     // Attach event listener to the analyze button scoped to this resultRow
     const analyzeBtn = resultRow.querySelector('.fnd-action-link');
-    const statusDetail = resultRow.querySelector('.fnd-status-text');
 
-    if (analyzeBtn && statusDetail) {
+    if (analyzeBtn) {
       console.log('FND: Attaching analyze click listener for post ID:', fbPostId);
-      
+
       let stepperInterval = null;
 
       analyzeBtn.addEventListener('click', async (ev) => {
@@ -417,7 +414,7 @@ async function checkPost(postElement, btnElement) {
         console.log('FND: analyze clicked for post ID:', fbPostId);
 
         analyzeBtn.setAttribute('disabled', 'true');
-        analyzeBtn.textContent = 'Đang phân tích...';
+        analyzeBtn.textContent = 'Đang đối chiếu...';
 
         const loadingPanel = resultRow.querySelector('.fnd-analysis-panel');
         if (loadingPanel) {
@@ -425,7 +422,7 @@ async function checkPost(postElement, btnElement) {
           loadingPanel.innerHTML = `
             <div class="fnd-analysis-panel-head">
               <div class="fnd-panel-title-wrap">
-                <span class="fnd-panel-title">🔍 Phân tích chuyên sâu</span>
+                <span class="fnd-panel-title">🔍 Tìm kiếm & đối chiếu thực tế</span>
                 <span class="fnd-chip fnd-chip-warning">Đang xử lý</span>
               </div>
             </div>
@@ -434,26 +431,26 @@ async function checkPost(postElement, btnElement) {
                 <div class="fnd-stepper-header">
                   <span class="fnd-spinner"></span>
                   <div>
-                    <div class="fnd-stepper-title">Hệ thống RAG đang xử lý...</div>
-                    <div class="fnd-stepper-subtitle">Đang đối chiếu dữ liệu thực tế và tổng hợp</div>
+                    <div class="fnd-stepper-title">Hệ thống đang tìm kiếm & đối chiếu...</div>
+                    <div class="fnd-stepper-subtitle">Đang tra cứu từ Wikipedia và báo chí trực tuyến để xác minh bài viết</div>
                   </div>
                 </div>
                 <div class="fnd-stepper-list">
                   <div class="fnd-step-item" data-fnd-step="1">
                     <div class="fnd-step-icon">1</div>
-                    <span class="fnd-step-label">Đọc nội dung và xác định điểm chính</span>
+                    <span class="fnd-step-label">Đọc nội dung bài viết và phân tích từ khóa chính</span>
                   </div>
                   <div class="fnd-step-item" data-fnd-step="2">
                     <div class="fnd-step-icon">2</div>
-                    <span class="fnd-step-label">Tìm thông tin liên quan để đối chiếu</span>
+                    <span class="fnd-step-label">Tìm kiếm các thông tin và bài viết liên quan trên Internet</span>
                   </div>
                   <div class="fnd-step-item" data-fnd-step="3">
                     <div class="fnd-step-icon">3</div>
-                    <span class="fnd-step-label">So sánh với nguồn tham khảo đáng tin cậy</span>
+                    <span class="fnd-step-label">So sánh nội dung với các nguồn tin chính thống uy tín</span>
                   </div>
                   <div class="fnd-step-item" data-fnd-step="4">
                     <div class="fnd-step-icon">4</div>
-                    <span class="fnd-step-label">Tổng hợp kết quả và đưa ra nhận định</span>
+                    <span class="fnd-step-label">Tổng hợp bằng chứng để đưa ra kết luận</span>
                   </div>
                 </div>
               </div>
@@ -493,7 +490,8 @@ async function checkPost(postElement, btnElement) {
         try {
           const analyzeData = await sendApiRequest('analyze', {
             text,
-            fb_post_id: fbPostId || null
+            fb_post_id: fbPostId || null,
+            record_id: predData ? predData.record_id : null
           });
 
           if (stepperInterval) {
@@ -502,7 +500,7 @@ async function checkPost(postElement, btnElement) {
           }
 
           openAnalysisPanel(postElement, analyzeData);
-          analyzeBtn.textContent = 'Xem phân tích chi tiết';
+          analyzeBtn.textContent = 'Xem bằng chứng đối chiếu';
           analyzeBtn.removeAttribute('disabled');
         } catch (error) {
           if (stepperInterval) {
@@ -510,14 +508,14 @@ async function checkPost(postElement, btnElement) {
             stepperInterval = null;
           }
           console.error('FND: analyze API call failed:', error);
-          analyzeBtn.textContent = 'Phân tích thất bại';
+          analyzeBtn.textContent = 'Đối chiếu thất bại';
           analyzeBtn.removeAttribute('disabled');
 
           if (loadingPanel) {
             loadingPanel.innerHTML = `
               <div class="fnd-analysis-panel-head">
                 <div class="fnd-panel-title-wrap">
-                  <span class="fnd-panel-title">🔍 Phân tích chuyên sâu</span>
+                  <span class="fnd-panel-title">🔍 Tìm kiếm & đối chiếu thực tế</span>
                   <span class="fnd-chip fnd-chip-fake">❌ Thất bại</span>
                 </div>
                 <button class="fnd-panel-close" type="button" data-fnd-action="collapse-analysis">Đóng</button>
@@ -526,22 +524,22 @@ async function checkPost(postElement, btnElement) {
                 <div class="fnd-error-box">
                   <div class="fnd-error-title">
                     <span>⚠️</span>
-                    <span>Không thể hoàn thành phân tích chuyên sâu</span>
+                    <span>Không thể đối chiếu thông tin thực tế</span>
                   </div>
                   <div class="fnd-error-text">${escapeHtml(error.message || 'Lỗi hệ thống khi phân tích.')}</div>
                   <div class="fnd-error-desc">Lỗi này có thể xảy ra do sự cố tạm thời của mô hình ngôn ngữ lớn (LLM) hoặc chính sách giới hạn API. Bạn có thể bấm nút bên dưới để thử lại.</div>
-                  <button class="fnd-retry-btn" type="button">🔄 Thử lại phân tích</button>
+                  <button class="fnd-retry-btn" type="button">🔄 Thử lại đối chiếu</button>
                 </div>
               </div>
             `;
-            
+
             // Bind close button
             const collapseBtn = loadingPanel.querySelector('[data-fnd-action="collapse-analysis"]');
             if (collapseBtn) {
               collapseBtn.addEventListener('click', () => {
                 loadingPanel.classList.remove('is-open');
                 loadingPanel.innerHTML = '';
-                analyzeBtn.textContent = 'Phân tích chuyên sâu';
+                analyzeBtn.textContent = 'Tìm kiếm & đối chiếu thực tế';
               });
             }
 
@@ -559,21 +557,21 @@ async function checkPost(postElement, btnElement) {
         }
       });
     } else {
-      console.warn('FND: Scoped analyze elements not found in resultRow');
+      console.warn('FND: Scoped analyze button not found in resultRow');
     }
   } catch (err) {
     console.error(err);
     resultRow.innerHTML = `<span class="fnd-chip fnd-chip-fake">❌ Lỗi: ${err.message || 'Lỗi kết nối máy chủ'}</span>`;
   } finally {
     btnElement.disabled = false;
-    btnElement.innerText = 'Dự đoán';
+    btnElement.innerText = 'Kiểm tra tin';
   }
 }
 
 // Inject button into a Facebook post element
 function injectButton(postElement, postUniqueId) {
   // Check if button is already injected in this post
-  if (postElement.classList.contains('fnd-processed') || postElement.querySelector('.fnd-inject-btn')) return;
+  if (postElement.classList.contains('fnd-processed') || postElement.querySelector('.fnd-inject-container')) return;
 
   const shareButton = postElement.querySelector('[data-ad-rendering-role="share_button"]');
   if (!shareButton) return;
@@ -581,30 +579,98 @@ function injectButton(postElement, postUniqueId) {
   postElement.classList.add('fnd-processed');
   postElement.setAttribute('data-fnd-post-id', postUniqueId);
 
+  const container = document.createElement('div');
+  container.className = 'fnd-inject-container';
+
   const button = document.createElement('button');
   button.className = 'fnd-inject-btn';
-  button.innerText = '🔍 Dự đoán';
-  
+  button.innerText = '🔍 Kiểm tra tin';
+
+  const idText = document.createElement('span');
+  idText.className = 'fnd-post-id-small';
+  idText.innerText = `ID: ${postUniqueId}`;
+
   button.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
     checkPost(postElement, button);
   });
-  
+
+  container.appendChild(button);
+  container.appendChild(idText);
+
   try {
-    postElement.prepend(button);
+    postElement.prepend(container);
   } catch (err) {
-    console.error('FND: Failed to inject button into post root.', err);
-    postElement.appendChild(button);
+    console.error('FND: Failed to inject button container into post root.', err);
+    postElement.appendChild(container);
   }
 }
+
+// // Monitor Facebook feed changes
+// function processPosts() {
+//   const candidates = document.querySelectorAll(POST_CANDIDATE_SELECTOR);
+//   candidates.forEach((root) => {
+//     if (root.closest('[role="button"]')) return;
+
+//     // Quick extract message text to build unique post signature
+//     let msgNode = root.querySelector(POST_MESSAGE_SELECTOR);
+//     if (!msgNode) {
+//       const fallbackNodes = root.querySelectorAll(POST_MESSAGE_FALLBACK_SELECTOR);
+//       let maxLen = 0;
+//       fallbackNodes.forEach(node => {
+//         const len = (node.innerText || '').trim().length;
+//         if (len > maxLen) {
+//           maxLen = len;
+//           msgNode = node;
+//         }
+//       });
+//     }
+
+//     const msgText = msgNode ? (msgNode.innerText || '').trim() : '';
+//     if (!msgText && (root.innerText || '').length <= 50) return;
+
+//     const fbPostId = getPostId(root, msgText);
+//     const postUniqueId = fbPostId
+//       ? fbPostId
+//       : hashString(msgText.substring(0, 200));
+
+//     // Check if the DOM node was recycled by Facebook for a new post
+//     const processedId = root.getAttribute('data-fnd-post-id');
+//     if (processedId) {
+//       if (processedId === postUniqueId) {
+//         return; // Already processed and content matches
+//       } else {
+//         // Element was recycled, reset state and clean up injected elements
+//         console.log('FND: Resetting recycled post node. Old ID:', processedId, 'New ID:', postUniqueId);
+//         root.classList.remove('fnd-processed');
+//         const oldBtn = root.querySelector('.fnd-inject-container');
+//         if (oldBtn) oldBtn.remove();
+//         const oldResult = root.querySelector('.fnd-result-bar');
+//         if (oldResult) oldResult.remove();
+//         root.removeAttribute('data-fnd-post-id');
+//       }
+//     }
+
+//     if (!root.querySelector('[data-ad-rendering-role="share_button"]')) return;
+
+//     injectButton(root, postUniqueId);
+//   });
+// }
 
 // Monitor Facebook feed changes
 function processPosts() {
   const candidates = document.querySelectorAll(POST_CANDIDATE_SELECTOR);
   candidates.forEach((root) => {
     if (root.closest('[role="button"]')) return;
-    
+
+    // =========================================================================
+    // RULE CẬP NHẬT: Chỉ giữ khối 'dialog' bọc trên cùng, bỏ qua khối con bên trong
+    // =========================================================================
+    // Nếu khối này KHÔNG PHẢI là dialog, nhưng lại NẰM TRONG một thẻ dialog khác -> Bỏ qua
+    if (root.getAttribute('role') !== 'dialog' && root.closest('[role="dialog"]')) return;
+    // =========================================================================
+
     // Quick extract message text to build unique post signature
     let msgNode = root.querySelector(POST_MESSAGE_SELECTOR);
     if (!msgNode) {
@@ -618,35 +684,45 @@ function processPosts() {
         }
       });
     }
-    
+
     const msgText = msgNode ? (msgNode.innerText || '').trim() : '';
     if (!msgText && (root.innerText || '').length <= 50) return;
-    
+
     const fbPostId = getPostId(root, msgText);
     const postUniqueId = fbPostId
-      ? fbPostId 
+      ? fbPostId
       : hashString(msgText.substring(0, 200));
 
     // Check if the DOM node was recycled by Facebook for a new post
     const processedId = root.getAttribute('data-fnd-post-id');
     if (processedId) {
+      const storedPrefix = root.getAttribute('data-fnd-text-prefix');
+      if (storedPrefix && msgText.includes(storedPrefix)) {
+        return; // Same post (potentially expanded), do not reset
+      }
+
       if (processedId === postUniqueId) {
         return; // Already processed and content matches
       } else {
         // Element was recycled, reset state and clean up injected elements
         console.log('FND: Resetting recycled post node. Old ID:', processedId, 'New ID:', postUniqueId);
         root.classList.remove('fnd-processed');
-        const oldBtn = root.querySelector('.fnd-inject-btn');
+        const oldBtn = root.querySelector('.fnd-inject-container');
         if (oldBtn) oldBtn.remove();
         const oldResult = root.querySelector('.fnd-result-bar');
         if (oldResult) oldResult.remove();
         root.removeAttribute('data-fnd-post-id');
+        root.removeAttribute('data-fnd-text-prefix');
       }
     }
 
     if (!root.querySelector('[data-ad-rendering-role="share_button"]')) return;
 
     injectButton(root, postUniqueId);
+    
+    // Store text prefix to identify post even after clicking "See more"
+    const textPrefix = msgText.substring(0, 30).trim();
+    root.setAttribute('data-fnd-text-prefix', textPrefix);
   });
 }
 

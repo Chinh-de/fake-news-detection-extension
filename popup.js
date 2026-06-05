@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:8000';
+const DEFAULT_API_URL = 'https://chinhde-fake-news-detection-backend.hf.space';
+let API_URL = DEFAULT_API_URL;
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
@@ -13,6 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const simpleLoading = document.getElementById('simple-loading');
   const stepperLoading = document.getElementById('stepper-loading');
   let stepperInterval = null;
+
+  // Settings Elements
+  const btnSettings = document.getElementById('btn-settings');
+  const settingsPanel = document.getElementById('settings-panel');
+  const btnCloseSettings = document.getElementById('btn-close-settings');
+  const btnSaveSettings = document.getElementById('btn-save-settings');
+  const customUrlContainer = document.getElementById('custom-url-container');
+  const customApiUrlInput = document.getElementById('custom-api-url');
 
   // Cards & Badges
   const slmBadge = document.getElementById('slm-badge');
@@ -79,10 +88,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
   newsInput.addEventListener('input', validateInput);
 
-  // 3. Run health check on startup
-  checkServerHealth();
-  // Poll health every 5 seconds
-  setInterval(checkServerHealth, 5000);
+  // Settings Logic
+  btnSettings.addEventListener('click', () => {
+    chrome.storage.local.get(['apiUrl', 'apiOption'], (result) => {
+      const savedOption = result.apiOption || 'server';
+      const savedUrl = result.apiUrl || DEFAULT_API_URL;
+
+      const radio = document.querySelector(`input[name="api-server"][value="${savedOption}"]`);
+      if (radio) {
+        radio.checked = true;
+      }
+
+      if (savedOption === 'custom') {
+        customUrlContainer.classList.remove('hidden');
+        customApiUrlInput.value = savedUrl;
+      } else {
+        customUrlContainer.classList.add('hidden');
+        customApiUrlInput.value = '';
+      }
+
+      settingsPanel.classList.remove('hidden');
+    });
+  });
+
+  btnCloseSettings.addEventListener('click', () => {
+    settingsPanel.classList.add('hidden');
+  });
+
+  document.querySelectorAll('input[name="api-server"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      if (e.target.value === 'custom') {
+        customUrlContainer.classList.remove('hidden');
+        customApiUrlInput.focus();
+      } else {
+        customUrlContainer.classList.add('hidden');
+      }
+    });
+  });
+
+  btnSaveSettings.addEventListener('click', () => {
+    const selectedOption = document.querySelector('input[name="api-server"]:checked').value;
+    let newUrl = DEFAULT_API_URL;
+
+    if (selectedOption === 'local') {
+      newUrl = 'http://localhost:8000';
+    } else if (selectedOption === 'custom') {
+      newUrl = customApiUrlInput.value.trim();
+      if (!newUrl) {
+        alert('Vui lòng nhập địa chỉ URL tùy chỉnh.');
+        return;
+      }
+    }
+
+    if (newUrl.endsWith('/')) {
+      newUrl = newUrl.slice(0, -1);
+    }
+
+    chrome.storage.local.set({ apiUrl: newUrl, apiOption: selectedOption }, () => {
+      API_URL = newUrl;
+      settingsPanel.classList.add('hidden');
+      setOffline("Đang kết nối lại...");
+      checkServerHealth();
+    });
+  });
+
+  // Load settings on startup, then start checking health
+  chrome.storage.local.get(['apiUrl'], (result) => {
+    if (result && result.apiUrl) {
+      API_URL = result.apiUrl;
+    } else {
+      API_URL = DEFAULT_API_URL;
+    }
+    checkServerHealth();
+    setInterval(checkServerHealth, 5000);
+  });
 
   // 4. Quick Predict Handler
   btnPredict.addEventListener('click', async () => {
@@ -133,22 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnPredict.disabled = true;
     btnAnalyze.disabled = true;
 
-    // 1. Call Quick Predict first to show early results
-    try {
-      const respPredict = await fetch(`${API_URL}/api/predict`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text })
-      });
-      if (respPredict.ok) {
-        const dataPredict = await respPredict.json();
-        renderPredictResult(dataPredict);
-      }
-    } catch (errPredict) {
-      console.error("Predict error during analysis:", errPredict);
-    }
-
-    // 2. Activate Stepper view
+    // 1. Activate Stepper view
     simpleLoading.classList.add('hidden');
     stepperLoading.classList.remove('hidden');
     loadingSpinner.classList.remove('hidden');
@@ -284,16 +348,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const isFake = slmLabel === 1;
 
     if (!isFake) {
-      if (confidencePct >= 90) return { label: 'Tin thật: Đáng tin cậy', badgeClass: 'real-high', progressClass: 'real-high' };
-      if (confidencePct >= 75) return { label: 'Tin thật: Khá tin cậy', badgeClass: 'real-medium', progressClass: 'real-medium' };
-      if (confidencePct >= 60) return { label: 'Tin thật: Có cơ sở', badgeClass: 'real-low', progressClass: 'real-low' };
-      return { label: 'Tin thật: Cần xác minh', badgeClass: 'none', progressClass: 'none' };
+      if (confidencePct >= 90) return { label: 'Tin chính xác: Đáng tin cậy', badgeClass: 'real-high', progressClass: 'real-high' };
+      if (confidencePct >= 75) return { label: 'Tin chính xác: Khá tin cậy', badgeClass: 'real-medium', progressClass: 'real-medium' };
+      if (confidencePct >= 60) return { label: 'Tin chính xác: Có cơ sở', badgeClass: 'real-low', progressClass: 'real-low' };
+      return { label: 'Tin chính xác: Cần xác minh thêm', badgeClass: 'none', progressClass: 'none' };
     }
 
-    if (confidencePct >= 90) return { label: 'Tin giả: Không đáng tin', badgeClass: 'fake-high', progressClass: 'fake-high' };
-    if (confidencePct >= 75) return { label: 'Tin giả: Ít tin cậy', badgeClass: 'fake-medium', progressClass: 'fake-medium' };
-    if (confidencePct >= 60) return { label: 'Tin giả: Có dấu hiệu sai lệch', badgeClass: 'fake-low', progressClass: 'fake-low' };
-    return { label: 'Tin giả: Cần thận trọng', badgeClass: 'fake-warn', progressClass: 'fake-warn' };
+    if (confidencePct >= 90) return { label: 'Tin sai lệch: Rất đáng ngờ', badgeClass: 'fake-high', progressClass: 'fake-high' };
+    if (confidencePct >= 75) return { label: 'Tin sai lệch: Thiếu tin cậy', badgeClass: 'fake-medium', progressClass: 'fake-medium' };
+    if (confidencePct >= 60) return { label: 'Tin sai lệch: Có dấu hiệu sai sự thật', badgeClass: 'fake-low', progressClass: 'fake-low' };
+    return { label: 'Tin sai lệch: Cần hết sức thận trọng', badgeClass: 'fake-warn', progressClass: 'fake-warn' };
   }
 
   function renderPredictResult(data) {
@@ -321,19 +385,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const llmIsFake = data.llm_label === 1;
 
     // Render LLM Card
-    llmBadge.textContent = llmIsFake ? "GIẢ" : "THẬT";
+    llmBadge.textContent = llmIsFake ? "SAI LỆCH" : "CHÍNH XÁC";
     llmBadge.className = `badge ${llmIsFake ? 'fake' : 'real'}`;
 
     // Render Consensus Block
     if (slmIsFake === llmIsFake) {
       conclusionBox.textContent = slmIsFake 
-        ? "🚨 ĐỒNG NHẤT: Cả mô hình dự đoán nhanh và phân tích sự kiện đều kết luận đây là TIN GIẢ."
-        : "✅ ĐỒNG NHẤT: Cả mô hình dự đoán nhanh và phân tích sự kiện đều nhận định là TIN THẬT.";
+        ? "🚨 TRÙNG KHỚP: Cả hai phương pháp phân tích đều nhận định đây là tin SAI SỰ THẬT."
+        : "✅ TRÙNG KHỚP: Cả hai phương pháp phân tích đều nhận định đây là tin CHÍNH XÁC.";
       conclusionBox.className = `conclusion-box ${slmIsFake ? 'match-fake' : 'match-real'}`;
     } else {
-      const slmStr = slmIsFake ? "Giả" : "Thật";
-      const llmStr = llmIsFake ? "Giả" : "Thật";
-      conclusionBox.textContent = `⚠️ XUNG ĐỘT: Văn phong có đặc điểm tin ${slmStr}, nhưng đối chiếu thực tế của LLM nhận định tin ${llmStr}. Người dùng cần tự đối chiếu đánh giá.`;
+      const slmStr = slmIsFake ? "sai lệch" : "chính xác";
+      const llmStr = llmIsFake ? "sai lệch" : "chính xác";
+      conclusionBox.textContent = `Bài viết có giọng điệu giống tin ${slmStr}, nhưng đối chiếu thực tế cho thấy đây là tin ${llmStr}. Bạn cần tự kiểm chứng lại để chắc chắn. Phân tích của AI có thể chưa hoàn hảo và cần được xem như một công cụ hỗ trợ, không phải là kết luận cuối cùng.`;
       conclusionBox.className = `conclusion-box conflict`;
     }
 

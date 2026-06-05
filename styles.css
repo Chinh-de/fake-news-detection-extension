@@ -1,215 +1,227 @@
-/* Injected Button Styles */
+/* ==========================================================================
+   Fake News Detection System - Chrome Extension Stylesheet
+   Premium Glassmorphic Design System (Synced with FE Frontend Spec)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* Reset/Scope variables for the extension elements */
+.fnd-inject-btn,
+.fnd-result-bar,
+.fnd-popup-modal {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box;
+}
+
+/* 1. Injected Button & ID Container (Sleek pill chèn vào đầu mỗi post FB) */
+.fnd-inject-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 12px 14px 4px 14px !important;
+}
+
 .fnd-inject-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
   color: white !important;
-  border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  margin: 8px 12px;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
-  transition: transform 0.2s ease, filter 0.2s ease;
-  z-index: 999;
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 6px 14px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25) !important;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, filter 0.2s ease !important;
+  z-index: 999 !important;
 }
 
 .fnd-inject-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
+  filter: brightness(1.08) !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35) !important;
 }
 
 .fnd-inject-btn:active {
-  transform: translateY(0);
+  transform: translateY(0) !important;
 }
 
-/* Injected Row/Bar Styles at the top of the post */
+.fnd-post-id-small {
+  font-size: 10.5px !important;
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+  user-select: all !important;
+}
+
+/* 2. Injected Result Bar (Glassmorphism container at top of Facebook post) */
 .fnd-result-bar {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  border-radius: 14px;
-  padding: 12px 16px;
-  margin: 10px 12px;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #0f172a;
-  font-size: 13px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-  animation: fndSlideDown 0.3s ease;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(14px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(125%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.09) !important;
+  border-radius: 16px !important;
+  padding: 14px 18px !important;
+  margin: 12px 14px !important;
+  color: #0f172a !important;
+  font-size: 12.5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 16px -6px rgba(15, 23, 42, 0.03) !important;
+  animation: fndSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .fnd-result-top {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
 }
 
 @keyframes fndSlideDown {
-  from { transform: translateY(-10px); opacity: 0; }
+  from { transform: translateY(-12px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
-.fnd-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 9999px;
-  text-transform: uppercase;
-}
-
+/* 3. Sleek Badges & Chips (Premium styling synced with FE theme) */
 .fnd-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  border: 1px solid transparent;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px;
+  padding: 4px 10px !important;
+  border-radius: 9999px !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  border: 1px solid transparent !important;
 }
 
 .fnd-chip-neutral {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border-color: #bfdbfe;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
 }
 
 .fnd-chip-info {
-  background: #f8fafc;
-  color: #475569;
-  border-color: #e2e8f0;
+  background: #f8fafc !important;
+  color: #475569 !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
 }
 
-.fnd-chip-real {
-  background: #ecfdf5;
-  color: #059669;
-  border-color: #a7f3d0;
-}
-
+/* Real/Valid Predictions */
 .fnd-chip-real-high {
-  background: #064e3b;
-  color: #ffffff;
-  border-color: #064e3b;
+  background: #064e3b !important;
+  color: #ffffff !important;
+  border-color: #064e3b !important;
 }
 
 .fnd-chip-real-medium {
-  background: #16a34a;
-  color: #ffffff;
-  border-color: #16a34a;
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #10b981 !important;
 }
 
 .fnd-chip-real-low {
-  background: #d1fae5;
-  color: #065f46;
-  border-color: #a7f3d0;
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
 }
 
-.fnd-chip-fake {
-  background: #fef2f2;
-  color: #dc2626;
-  border-color: #fecaca;
-}
-
+/* Fake/Suspect Predictions */
 .fnd-chip-fake-high {
-  background: #7f1d1d;
-  color: #ffffff;
-  border-color: #7f1d1d;
+  background: #7f1d1d !important;
+  color: #ffffff !important;
+  border-color: #7f1d1d !important;
 }
 
 .fnd-chip-fake-medium {
-  background: #ea580c;
-  color: #ffffff;
-  border-color: #ea580c;
+  background: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
 }
 
 .fnd-chip-fake-low {
-  background: #ffedd5;
-  color: #9a3412;
-  border-color: #fdba74;
+  background: #ffedd5 !important;
+  color: #9a3412 !important;
+  border-color: rgba(234, 88, 12, 0.25) !important;
 }
 
 .fnd-chip-fake-warn {
-  background: #f59e0b;
-  color: #ffffff;
-  border-color: #f59e0b;
+  background: #f59e0b !important;
+  color: #ffffff !important;
+  border-color: #f59e0b !important;
 }
 
 .fnd-chip-warning {
-  background: #fffbeb;
-  color: #d97706;
-  border-color: #fde68a;
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
 }
 
+/* Consensus indicator badges */
+.fnd-chip.fnd-evaluation-match {
+  background: #ecfdf5 !important;
+  color: #059669 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.fnd-chip.fnd-evaluation-conflict {
+  background: #fffbeb !important;
+  color: #d97706 !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+/* 4. Action Buttons Inside Results Card */
 .fnd-action-link {
-  appearance: none;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-  color: white;
-  border: none;
-  border-radius: 9999px;
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18);
+  appearance: none !important;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 6px 14px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
 }
 
 .fnd-action-link:hover {
-  filter: brightness(1.05);
+  filter: brightness(1.08) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3) !important;
 }
 
-.fnd-badge-real {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10B981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.fnd-badge-fake {
-  background: rgba(239, 68, 68, 0.15);
-  color: #EF4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+.fnd-action-link:disabled {
+  background: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+  transform: none !important;
 }
 
 .fnd-status-text {
-  font-size: 11px;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 11px !important;
+  color: #64748b !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
 }
 
-.fnd-loading-box {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
-  font-size: 11px;
-  font-weight: 700;
-}
-
+/* Inline Spinner */
 .fnd-spinner {
-  width: 12px;
-  height: 12px;
-  border: 2px solid rgba(37, 99, 235, 0.18);
-  border-top: 2px solid #2563eb;
-  border-radius: 50%;
-  animation: fndSpin 1s linear infinite;
+  width: 13px !important;
+  height: 13px !important;
+  border: 2px solid rgba(37, 99, 235, 0.15) !important;
+  border-top: 2px solid #2563eb !important;
+  border-radius: 50% !important;
+  animation: fndSpin 0.8s linear infinite !important;
+  display: inline-block !important;
 }
 
 @keyframes fndSpin {
@@ -217,405 +229,371 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Floating Popup Modal Styles */
-.fnd-popup-modal {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 380px;
-  max-height: 520px;
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  border-radius: 16px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #0f172a;
-  overflow: hidden;
-  animation: fndPopupIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
+/* 5. Analysis Expandable Panel (Collapsible content) */
 .fnd-analysis-panel {
-  width: 100%;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
-  border-radius: 14px;
+  width: 100% !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transform: translateY(-8px) !important;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, transform 0.3s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .fnd-analysis-panel.is-open {
-  max-height: 1200px;
-  opacity: 1;
-  transform: translateY(0);
+  max-height: 1800px !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .fnd-analysis-panel-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 10px;
-  padding: 12px 14px;
-  border: 1px solid #dbe4f0;
-  border-radius: 14px 14px 0 0;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-top: 14px !important;
+  padding: 12px 16px !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  border-radius: 12px 12px 0 0 !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02) !important;
 }
 
 .fnd-panel-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
 }
 
 .fnd-panel-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: #0f172a;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
 }
 
 .fnd-panel-close {
-  appearance: none;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: #334155;
-  border-radius: 9999px;
-  padding: 6px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
+  appearance: none !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  border-radius: 9999px !important;
+  padding: 5px 12px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s, border-color 0.2s !important;
 }
 
 .fnd-panel-close:hover {
-  background: #f8fafc;
+  background: #f8fafc !important;
+  border-color: rgba(15, 23, 42, 0.24) !important;
 }
 
+/* 6. Expandable Content Body */
 .fnd-analysis-panel-body {
-  border: 1px solid #dbe4f0;
-  border-top: none;
-  border-radius: 0 0 14px 14px;
-  background: #ffffff;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.07);
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  border-top: none !important;
+  border-radius: 0 0 12px 12px !important;
+  background: #ffffff !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.02) !important;
+  max-height: 480px !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(15, 23, 42, 0.2) transparent !important;
+}
+
+.fnd-analysis-panel-body::-webkit-scrollbar {
+  width: 6px !important;
+}
+.fnd-analysis-panel-body::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+.fnd-analysis-panel-body::-webkit-scrollbar-thumb {
+  background-color: rgba(15, 23, 42, 0.18) !important;
+  border-radius: 9999px !important;
 }
 
 .fnd-analysis-panel-footer {
-  border: 1px solid #dbe4f0;
-  border-top: none;
-  border-radius: 0 0 14px 14px;
-  background: #f8fafc;
-  padding: 10px 14px;
-  font-size: 10px;
-  color: #64748b;
-  text-align: center;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  border-top: none !important;
+  border-radius: 0 0 12px 12px !important;
+  background: #f8fafc !important;
+  padding: 10px 16px !important;
+  font-size: 10.5px !important;
+  color: #64748b !important;
+  text-align: center !important;
+  line-height: 1.4 !important;
 }
 
-.fnd-empty-state {
-  margin: 0;
-  color: #64748b;
-  font-style: italic;
-}
-
-.fnd-evidence-entity {
-  color: #2563eb;
-}
-
-@keyframes fndPopupIn {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.fnd-popup-header {
-  padding: 12px 16px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.fnd-popup-title {
-  font-weight: 800;
-  font-size: 14px;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.fnd-close-btn {
-  background: transparent;
-  border: none;
-  color: #64748b;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
-}
-
-.fnd-close-btn:hover {
-  color: #0f172a;
-}
-
-.fnd-popup-body {
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
-  font-size: 12px;
-  line-height: 1.5;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.fnd-section-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
-}
-
-.fnd-explanation-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 12px;
-  color: #334155;
-  font-style: italic;
-}
-
-.fnd-evidence-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.fnd-evidence-item {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
-}
-
-.fnd-evidence-title {
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 2px;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.fnd-evidence-text {
-  color: #475569;
-  font-size: 11px;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.fnd-evidence-link {
-  color: #3B82F6;
-  text-decoration: none;
-  font-size: 10px;
-  margin-top: 4px;
-  display: inline-block;
-}
-
-.fnd-evidence-link:hover {
-  text-decoration: underline;
-}
-
+/* 7. Conclusion Blocks (Real / Fake / Conflict banners) */
 .fnd-evaluation-conclusion {
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  font-weight: 500;
+  padding: 12px 16px !important;
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
 }
 
 .fnd-evaluation-match {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
-  color: #10B981;
+  background: #ecfdf5 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+  color: #065f46 !important;
 }
 
 .fnd-evaluation-conflict {
-  background: #fffbeb;
-  border-color: #fde68a;
-  color: #F59E0B;
+  background: #fffbeb !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+  color: #92400e !important;
 }
 
-.fnd-popup-footer {
-  padding: 10px 16px;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
-  font-size: 10px;
-  color: #64748b;
-  text-align: center;
+/* 8. Text Sections inside Panel */
+.fnd-section-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 6px !important;
 }
 
-/* In-Page Stepper Loading Styles */
+.fnd-explanation-box {
+  background: #f8fafc !important;
+  border: 1px solid rgba(15, 23, 42, 0.07) !important;
+  border-radius: 10px !important;
+  padding: 14px !important;
+  color: #334155 !important;
+  line-height: 1.6 !important;
+  font-size: 12px !important;
+}
+
+.fnd-evidence-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* 9. Evidence cards (Wikipedia items & News snippets) */
+.fnd-evidence-item {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.07) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02) !important;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.fnd-evidence-item:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05) !important;
+  border-color: rgba(15, 23, 42, 0.16) !important;
+}
+
+.fnd-evidence-entity {
+  color: #2563eb !important;
+  font-weight: 700 !important;
+}
+
+.fnd-evidence-title {
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 4px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.fnd-evidence-text {
+  color: #475569 !important;
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+.fnd-evidence-link {
+  color: #2563eb !important;
+  text-decoration: none !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  margin-top: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px;
+}
+
+.fnd-evidence-link:hover {
+  text-decoration: underline !important;
+  color: #1d4ed8 !important;
+}
+
+.fnd-empty-state {
+  margin: 0 !important;
+  color: #94a3b8 !important;
+  font-style: italic !important;
+  font-size: 11px !important;
+}
+
+/* 10. Stepper Loader (Animations during RAG processing) */
 .fnd-stepper-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  width: 100% !important;
 }
 
 .fnd-stepper-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
-  padding-bottom: 8px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+  padding-bottom: 10px !important;
 }
 
 .fnd-stepper-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
 }
 
 .fnd-stepper-subtitle {
-  font-size: 9.5px;
-  color: #64748b;
-  margin-top: 1px;
+  font-size: 10px !important;
+  color: #64748b !important;
+  margin-top: 2px !important;
 }
 
 .fnd-stepper-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
 }
 
 .fnd-step-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  opacity: 0.3;
-  transition: opacity 0.3s ease;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  opacity: 0.35 !important;
+  transition: opacity 0.35s ease !important;
 }
 
 .fnd-step-item.active {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 .fnd-step-item.completed {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 .fnd-step-icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 700;
-  border: 1.5px solid #cbd5e1;
-  background: #f1f5f9;
-  color: #64748b;
-  flex-shrink: 0;
-  transition: all 0.3s ease;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  flex-shrink: 0 !important;
+  transition: all 0.3s ease !important;
 }
 
 .fnd-step-item.active .fnd-step-icon {
-  border-color: #2563eb;
-  background: #eff6ff;
-  color: #2563eb;
-  animation: fndPulse 2s infinite;
+  border-color: #2563eb !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  animation: fndPulse 2s infinite !important;
 }
 
 .fnd-step-item.completed .fnd-step-icon {
-  border-color: #059669;
-  background: #ecfdf5;
-  color: #059669;
+  border-color: #059669 !important;
+  background: #ecfdf5 !important;
+  color: #059669 !important;
 }
 
 .fnd-step-label {
-  font-size: 11px;
-  color: #475569;
-  transition: color 0.3s ease, font-weight 0.3s ease;
+  font-size: 11.5px !important;
+  color: #475569 !important;
+  transition: color 0.3s ease, font-weight 0.3s ease !important;
 }
 
 .fnd-step-item.active .fnd-step-label {
-  color: #1e3a8a;
-  font-weight: 600;
+  color: #1e3a8a !important;
+  font-weight: 700 !important;
 }
 
 @keyframes fndPulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.06); }
   100% { transform: scale(1); }
 }
 
-/* In-Page Detailed Error Box Styles */
+/* 11. Detailed Error Panels */
 .fnd-error-box {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  padding: 12px;
-  background: rgba(220, 38, 38, 0.03);
-  border: 1px solid rgba(220, 38, 38, 0.12);
-  border-radius: 10px;
-  color: #b91c1c;
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 10px !important;
+  padding: 14px !important;
+  background: rgba(239, 68, 68, 0.03) !important;
+  border: 1px solid rgba(239, 68, 68, 0.12) !important;
+  border-radius: 10px !important;
+  color: #b91c1c !important;
+  width: 100% !important;
 }
 
 .fnd-error-title {
-  font-size: 12px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
 }
 
 .fnd-error-text {
-  font-size: 10.5px;
-  padding: 8px;
-  background: #ffffff;
-  border: 1px solid rgba(220, 38, 38, 0.1);
-  border-radius: 6px;
-  word-break: break-all;
-  white-space: pre-wrap;
-  color: #475569;
-  font-family: monospace;
+  font-size: 11px !important;
+  padding: 10px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(239, 68, 68, 0.1) !important;
+  border-radius: 8px !important;
+  word-break: break-all !important;
+  white-space: pre-wrap !important;
+  color: #475569 !important;
+  font-family: monospace !important;
 }
 
 .fnd-error-desc {
-  font-size: 10.5px;
-  color: #64748b;
-  line-height: 1.4;
+  font-size: 11px !important;
+  color: #64748b !important;
+  line-height: 1.4 !important;
 }
 
 .fnd-retry-btn {
-  background: #ef4444;
+  background: #ef4444 !important;
   color: #ffffff !important;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 8px 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 11px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: background-color 0.2s;
-  width: fit-content;
-  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 11px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  transition: background-color 0.2s !important;
+  width: fit-content !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
 }
 
 .fnd-retry-btn:hover {
-  background: #dc2626;
+  background: #dc2626 !important;
 }
-

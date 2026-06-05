@@ -13,9 +13,12 @@
         <span class="logo-icon">🛡️</span>
         <h1 class="logo-title">Fake News Detection</h1>
       </div>
-      <div class="status-indicator" id="backend-status">
-        <span class="status-dot offline"></span>
-        <span class="status-label">Đang kết nối...</span>
+      <div class="header-controls" style="display: flex; align-items: center; gap: 8px;">
+        <div class="status-indicator" id="backend-status">
+          <span class="status-dot offline"></span>
+          <span class="status-label">Đang kết nối...</span>
+        </div>
+        <button id="btn-settings" class="icon-btn" title="Cài đặt Máy chủ" type="button">⚙️</button>
       </div>
     </header>
 
@@ -139,6 +142,54 @@
       Kết quả chỉ để tham khảo, vui lòng kiểm chứng thêm.
     </footer>
   </div>
+
+  <!-- Settings Panel -->
+  <div id="settings-panel" class="settings-overlay hidden">
+    <div class="settings-card">
+      <div class="settings-header">
+        <span class="settings-title">⚙️ Cài đặt Máy chủ API</span>
+        <button id="btn-close-settings" class="icon-btn-close" type="button">&times;</button>
+      </div>
+      <div class="settings-body">
+        <div class="setting-item">
+          <label class="setting-label">Chọn môi trường:</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="api-server" value="server" checked>
+              <div class="radio-custom"></div>
+              <div class="radio-text">
+                <span class="radio-title">Hugging Face Cloud (Production)</span>
+                <span class="radio-desc">https://chinhde-fake-news-detection-backend.hf.space</span>
+              </div>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="api-server" value="local">
+              <div class="radio-custom"></div>
+              <div class="radio-text">
+                <span class="radio-title">Localhost (Máy cá nhân)</span>
+                <span class="radio-desc">http://localhost:8000</span>
+              </div>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="api-server" value="custom">
+              <div class="radio-custom"></div>
+              <div class="radio-text">
+                <span class="radio-title">Tùy chỉnh URL</span>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <div class="setting-item hidden" id="custom-url-container">
+          <label for="custom-api-url" class="setting-label-small">API URL tùy chỉnh:</label>
+          <input type="text" id="custom-api-url" class="custom-url-input" placeholder="http://localhost:8000">
+        </div>
+        
+        <button id="btn-save-settings" class="btn btn-save" type="button">Lưu cấu hình</button>
+      </div>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

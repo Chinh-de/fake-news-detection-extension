@@ -1,7 +1,20 @@
-const API_URL = 'http://localhost:8000';
+const DEFAULT_API_URL = 'https://chinhde-fake-news-detection-backend.hf.space';
+
+async function getApiUrl() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(['apiUrl'], (result) => {
+      if (result && result.apiUrl) {
+        resolve(result.apiUrl);
+      } else {
+        resolve(DEFAULT_API_URL);
+      }
+    });
+  });
+}
 
 async function postJson(path, payload) {
-  const response = await fetch(`${API_URL}${path}`, {
+  const apiUrl = await getApiUrl();
+  const response = await fetch(`${apiUrl}${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
