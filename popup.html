@@ -103,6 +103,25 @@
           </div>
         </div>
 
+        <!-- XGBoost Fast Predict Result -->
+        <div id="xgb-card" class="result-card xgb-card" style="margin-top: 10px;">
+          <div class="card-header">
+            <span class="card-title">📊 DỰ ĐOÁN PHỤ (XGBOOST)</span>
+            <span id="xgb-badge" class="badge">CHƯA CHẠY</span>
+          </div>
+          <div class="card-body">
+            <div class="confidence-container">
+              <div class="confidence-header">
+                <span class="confidence-label">Độ tự tin:</span>
+                <span id="xgb-confidence" class="confidence-value">0%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div id="xgb-progress" class="progress-bar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- LLM Deep Analysis Result -->
         <div id="llm-card" class="result-card llm-card hidden">
           <div class="card-header">

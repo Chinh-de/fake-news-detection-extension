@@ -15,7 +15,7 @@ const POST_CANDIDATE_SELECTOR = '[role="article"], div.x1a2a7pz';
 const POST_MESSAGE_SELECTOR = '[data-ad-preview="message"], [data-ad-rendering-role="story_message"]';
 const POST_MESSAGE_FALLBACK_SELECTOR = '.xdj266r.x14z9mp.xat24cr.x1lziwak';
 const HIDE_TEXT_PATTERNS = /^(Ẩn bớt|See less)$/i;
-const EXPAND_TEXT_PATTERNS = /(Xem thêm|See more)/i;
+const EXPAND_TEXT_PATTERNS = /^\s*(Xem thêm|See more)\s*$/i;
 const NOISE_LINE_PATTERNS = [
   /^Facebook$/i,
   /^Bài viết của\b/i,
@@ -384,10 +384,26 @@ async function checkPost(postElement, btnElement) {
     });
     const quickDisplay = getQuickPredictionDisplay(predData.slm_label, predData.slm_confidence);
 
+    let xgbRowHtml = '';
+    if (predData.xgboost_label !== undefined && predData.xgboost_label !== null) {
+      const xgbDisplay = getQuickPredictionDisplay(predData.xgboost_label, predData.xgboost_confidence);
+      xgbRowHtml = `
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%;">
+          <span style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; min-width: 90px;">Dự đoán XGB:</span>
+          <span class="fnd-chip ${xgbDisplay.chipClass}">
+            ${xgbDisplay.label}
+          </span>
+          <span style="font-size: 11.5px; color: #475569;">
+            Độ tin cậy: <strong style="color: #0f172a; font-weight: 700;">${(predData.xgboost_confidence * 100).toFixed(0)}%</strong>
+          </span>
+        </div>
+      `;
+    }
+
     resultRow.innerHTML = `
-      <div class="fnd-result-top">
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <span style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.03em;">Đánh giá nhanh:</span>
+      <div class="fnd-result-top" style="flex-direction: column !important; align-items: flex-start !important; gap: 8px !important;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%;">
+          <span style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; min-width: 90px;">Dự đoán SLM:</span>
           <span class="fnd-chip ${quickDisplay.chipClass}">
             ${quickDisplay.label}
           </span>
@@ -395,7 +411,10 @@ async function checkPost(postElement, btnElement) {
             Độ tin cậy: <strong style="color: #0f172a; font-weight: 700;">${(predData.slm_confidence * 100).toFixed(0)}%</strong>
           </span>
         </div>
-        <button class="fnd-action-link" type="button">Tìm kiếm & đối chiếu thực tế</button>
+        ${xgbRowHtml}
+        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 4px;">
+          <button class="fnd-action-link" type="button">Tìm kiếm & đối chiếu thực tế</button>
+        </div>
       </div>
       <div class="fnd-analysis-panel" aria-hidden="true"></div>
     `;

@@ -28,6 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const slmConfidence = document.getElementById('slm-confidence');
   const slmProgress = document.getElementById('slm-progress');
 
+  const xgbBadge = document.getElementById('xgb-badge');
+  const xgbConfidence = document.getElementById('xgb-confidence');
+  const xgbProgress = document.getElementById('xgb-progress');
+
   const llmCard = document.getElementById('llm-card');
   const llmBadge = document.getElementById('llm-badge');
   const conclusionBox = document.getElementById('conclusion-box');
@@ -371,14 +375,34 @@ document.addEventListener('DOMContentLoaded', () => {
     slmProgress.style.width = `${confidencePct}%`;
     slmProgress.className = `progress-bar ${display.progressClass}`;
 
+    // Render XGBoost result if present
+    if (data.xgboost_label !== undefined && data.xgboost_label !== null) {
+      const xgbConfidencePct = Math.round(data.xgboost_confidence * 100);
+      const xgbDisplay = getQuickPredictionDisplay(data.xgboost_label, data.xgboost_confidence);
+
+      xgbBadge.textContent = xgbDisplay.label;
+      xgbBadge.className = `badge ${xgbDisplay.badgeClass}`;
+      
+      xgbConfidence.textContent = `${xgbConfidencePct}%`;
+      xgbProgress.style.width = `${xgbConfidencePct}%`;
+      xgbProgress.className = `progress-bar ${xgbDisplay.progressClass}`;
+    } else {
+      xgbBadge.textContent = 'CHƯA CHẠY';
+      xgbBadge.className = 'badge';
+      xgbConfidence.textContent = '0%';
+      xgbProgress.style.width = '0%';
+    }
+
     resultsPanel.classList.remove('hidden');
   }
 
   function renderAnalyzeResult(data) {
-    // Render SLM prediction (RAG response includes both)
+    // Render SLM and XGBoost predictions (RAG response includes both)
     renderPredictResult({
       slm_label: data.slm_label,
-      slm_confidence: data.slm_confidence
+      slm_confidence: data.slm_confidence,
+      xgboost_label: data.xgboost_label,
+      xgboost_confidence: data.xgboost_confidence
     });
 
     const slmIsFake = data.slm_label === 1;
